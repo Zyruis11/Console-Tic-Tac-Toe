@@ -1,4 +1,5 @@
 #Python tic tac toe console game with basic AI
+import copy
 w, h = 3, 3; #Width and height of the game field
 playingField = [[" " for x in range(w)] for y in range(h)]
 
@@ -16,7 +17,7 @@ def draw( ):
     print("|" + playingField[0][2] + "|" +  playingField[1][2] + "|" +  playingField[2][2] + "|")
 
 def checkVictory(board, x, y):
-      #check if previous move caused a win on vertical line
+    #check if previous move caused a win on vertical line
     if board[0][y] == board[1][y] == board [2][y]:
         return True
 
@@ -31,8 +32,36 @@ def checkVictory(board, x, y):
     #check if previous move was on the secondary diagonal and caused a win
     if x + y == 2 and board[0][2] == board[1][1] == board [2][0]:
         return True
-
     return False
+
+def checkSpace(x, y):
+    if(playingField[x][y] == " "):
+        return True
+    else:
+        return False
+def copyBoard(board):
+    return copy.deepcopy(board)
+#clone the board then check
+def cpuPlayer():
+    # #check if it can win in the next turn
+    for y in range(0,3):
+        for x in range(0,3):
+            copy = copyBoard(playingField)
+            if checkSpace(x,y):
+                copy[x][y] = cpuChar
+                if checkVictory(copy,x,y):
+                    print(checkVictory(copy,cpuX,cpuY))
+                    cpuX = x
+                    cpuY = y
+                    playingField[cpuX][cpuY] = cpuChar
+
+    #check if the player can win in the next turn
+
+    #Try to take the center position
+    if playingField[1][1] == " ":
+        cpuX = 1
+        cpuY = 1
+        playingField[cpuX][cpuY] = cpuChar
 
 while(not gameOver):
     if(playerTurn):
@@ -47,8 +76,10 @@ while(not gameOver):
         draw()
         print(checkVictory(playingField,playerX,playerY))
     else:
+        cpuPlayer()
+        draw()
+        playerTurn = True
 
-    playerTurn = True
     if(checkVictory(playingField,playerX,playerY) and playerTurn):
         print("You Won")
         gameOver = True
