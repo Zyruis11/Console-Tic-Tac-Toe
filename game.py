@@ -1,13 +1,10 @@
 #Python tic tac toe console game with basic AI
 import copy
+import player
 w, h = 3, 3; #Width and height of the game field
 playingField = [[" " for x in range(w)] for y in range(h)]
 
-playerChar = "x"
 cpuChar = "O"
-playerTurn = True
-playerX = 0
-playerY = 0
 cpuX = 0
 cpuY = 0
 gameOver = False
@@ -45,9 +42,13 @@ def checkFullBoard(board):
         for y in range(0,3):
             for x in range(0,3):
                 if board[x][y] == " ":
+                    print("not full")
                     return False
                 else:
                     return True
+def makeMove(x,y,char):
+    playingField[x][y] = char
+
 def copyBoard(board):
     return copy.deepcopy(board)
 #clone the board then check
@@ -69,7 +70,7 @@ def cpuPlayer():
         for x in range(0,3):
             copy = copyBoard(playingField)
             if checkSpace(x,y):
-                copy[x][y] = playerChar
+                copy[x][y] = player.playerChar
                 if checkVictory(copy,x,y):
                     cpuX = x
                     cpuY = y
@@ -103,26 +104,20 @@ def cpuPlayer():
         return
 
 while(not gameOver):
-    if(playerTurn):
-        print("Enter XCords(0-2):")
-        playerX = input()
-        print("Enter YCords(0-2):")
-        playerY = input()
-        playerX = int(playerX)
-        playerY = int(playerY)
-        playingField[playerX][playerY] = playerChar
-        playerTurn = False
+    if(player.playerTurn):
+        x,y = player.playerMove()
+        makeMove(x,y,player.playerChar)
         print("Your Move")
         draw()
-        print(playerX, playerY)
+        player.playerTurn = False
     else:
         cpuPlayer()
         print("Computer's Move")
         draw()
-        playerTurn = True
+        player.playerTurn = True
         print(cpuX, cpuY)
 
-    if checkVictory(playingField,playerX,playerY):
+    if checkVictory(playingField,player.playerX,player.playerY):
         print("You Won")
         gameOver = True
     elif checkVictory(playingField,cpuX,cpuY):
